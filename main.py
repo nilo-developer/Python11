@@ -1,9 +1,13 @@
 from tkinter import *
-from tkinter import messagebox, StringVar
+from tkinter import messagebox, StringVar , simpledialog
 from tkinter import ttk
 
 
 sim_card_list = []
+current_editing_index = -1 # برای نگهداری ایندکس آیتمی که در حال ویرایش است
+
+
+
 
 # 5
 def reset_form():
@@ -28,20 +32,61 @@ def save_click():
     table.insert("", END, values=tuple(sim_card.values()))
 
 # HomeWork
+
+
+#8
 def edit_click():
-    pass
+    global current_editing_index
+    if current_editing_index == -1 :
+        messagebox.showwarning("Edit Error")
+        return
+
+   # دریافت اطلاعات جدید
+    updated_sim_card = {
+        "number": number.get(),
+        "owner": owner.get(),
+        "regester_time": regester_time.get(),
+        "oparator": oparator.get(),
+        "charge": charge.get()
+    }
+
+
+    sim_card_list[current_editing_index] = updated_sim_card
+    messagebox.showwarning('ویرایش با موفقیت انجام شد')
+
+    reset_form()
+
+
+#9
 def remove_click():
-    pass
+    global current_editing_index
+
+    if current_editing_index == -1:
+        messagebox.showwarning("Remove Error")
+        return
+    del sim_card_list[current_editing_index]
+    messagebox.showinfo("Remove", "Successfully removed!")
+    reset_form()
+
+
 
 # 7
 def table_select(event):
-    table_row = table.focus()  # I001
-    selected = table.item(table_row)["values"]  # [1,sib,sib,1000,5]
-    number.set(selected[0])
-    owner.set(selected[1])
-    regester_time.set(selected[2])
-    oparator.set(selected[3])
-    charge.set(selected[4])
+    try:
+        table_row = table.focus()  # I001
+        selected = table.item(table_row)["values"]  # مثلاً [1, 'sib', 'sib', '1000', '5']
+        number.set(selected[0])
+        owner.set(selected[1])
+        regester_time.set(selected[2])
+        oparator.set(selected[3])
+        charge.set(int(selected[4]))
+
+        global current_editing_index
+        current_editing_index = (table_row)
+
+    except EXCEPTION as e:
+        messagebox.showerror('error')
+
 
 # 0
 window = Tk()
